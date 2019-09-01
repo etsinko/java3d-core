@@ -46,7 +46,7 @@ You should see Java3D working
 ##Documentation
 
 ###Javadocs  
-.  
+
 https://jogamp.org/wiki/index.php?title=Java3D_API_Documentation  
 
 ###Basic overview guide  
@@ -58,11 +58,11 @@ General technical tips <https://java.net/projects/java3d/pages/Java3DApplication
 Using the newer ES2/ES3 pipeline [/docs/GL2ES2Pipeline usage guide.md](/docs/GL2ES2Pipeline usage guide.md)   
 
 ###Tutorials  
-.  
+  
 <http://www.java3d.org/tutorial.html>  
 
 ###FAQ  
-.  
+  
 <http://jogamp.org/wiki/index.php/Java3D_FAQ>  
 
 ###General assistance  
