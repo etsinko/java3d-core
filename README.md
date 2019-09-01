@@ -47,10 +47,7 @@ You should see Java3D working
 
 ###Javadocs  
 .  
-<http://download.java.net/media/java3d/javadoc/1.5.0/>  
-or  
-<https://github.com/scijava/java3d-javadoc>  
-though neither is correctly up to date  
+https://jogamp.org/wiki/index.php?title=Java3D_API_Documentation  
 
 ###Basic overview guide  
 
