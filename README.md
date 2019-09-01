@@ -11,7 +11,7 @@ The source code license information for this project is in LICENSE.txt
 Additional information and license restrictions for third party source
 code are found in the THIRDPARTY-LICENSE-*.txt files.
 
-##Building Java3D
+## Building Java3D
 
 The instructions below are based on eclipse, however they should work on most common IDE's
 
@@ -23,15 +23,15 @@ Expand the Maven group and select Existing Maven Project and click Next
 For Root directory click Browse and find the root folder that you cloned the repo into  
 There should be a pom.xml that is ticked in the Projects area  
 Click Finish  
-Repeat for java3d-utils using
-https://github.com/philjord/java3d-utils.git
-Repeat for vecmath using
-https://github.com/philjord/vecmath.git
+Repeat for java3d-utils using  
+https://github.com/philjord/java3d-utils.git  
+Repeat for vecmath using  
+https://github.com/philjord/vecmath.git  
 
-Once that's done it's likely you'll need to 
-Right click on pom.xml -> Run As -> Maven clean
-then
-Right click on pom.xml -> Run As -> Maven generate sources
+Once that's done it's likely you'll need to  
+Right click on pom.xml -> Run As -> Maven clean  
+then  
+Right click on pom.xml -> Run As -> Maven generate sources  
 This should place a derived version of VersionInfo.java into /java3d-core/target/generated-sources/java-templates
 
 
@@ -43,13 +43,13 @@ org.jdesktop.j3d.examples.hello_universe.HelloUniverse.java
 Run as ... Java Application  
 You should see Java3D working  
 
-##Documentation
+## Documentation  
 
-###Javadocs  
+### Javadocs  
 
 https://jogamp.org/wiki/index.php?title=Java3D_API_Documentation  
 
-###Basic overview guide  
+### Basic overview guide  
 
 For the best kick off point see [/docs/tutorial/](/docs/tutorial/)   
 For a description of performance see [/docs/perf_guide.txt](/docs/perf_guide.txt)  
@@ -57,14 +57,14 @@ Old Java3d project site with lots of information <https://java.net/projects/java
 General technical tips <https://java.net/projects/java3d/pages/Java3DApplicationDev>  
 Using the newer ES2/ES3 pipeline [/docs/GL2ES2PipelineUsageGuide.md](/docs/GL2ES2PipelineUsageGuide.md)   
 
-###Tutorials  
+### Tutorials  
   
 <http://www.java3d.org/tutorial.html>  
 
-###FAQ  
+### FAQ  
   
 <http://jogamp.org/wiki/index.php/Java3D_FAQ>  
 
-###General assistance  
+### General assistance  
 contact the forum at  
 <http://forum.jogamp.org/>  
