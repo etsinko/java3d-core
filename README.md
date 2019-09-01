@@ -53,9 +53,9 @@ https://jogamp.org/wiki/index.php?title=Java3D_API_Documentation
 
 For the best kick off point see [/docs/tutorial/](/docs/tutorial/)   
 For a description of performance see [/docs/perf_guide.txt](/docs/perf_guide.txt)  
-Old Java3d project site with lots of information <https://java.net/projects/java3d>
+Old Java3d project site with lots of information <https://java.net/projects/java3d>   
 General technical tips <https://java.net/projects/java3d/pages/Java3DApplicationDev>  
-Using the newer ES2/ES3 pipeline [/docs/GL2ES2Pipeline usage guide.md](/docs/GL2ES2Pipeline usage guide.md)   
+Using the newer ES2/ES3 pipeline [/docs/GL2ES2PipelineUsageGuide.md](/docs/GL2ES2PipelineUsageGuide.md)   
 
 ###Tutorials  
   
