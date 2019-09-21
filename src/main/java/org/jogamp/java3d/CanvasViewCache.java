@@ -26,7 +26,11 @@
 
 package org.jogamp.java3d;
 
+import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.IllegalComponentStateException;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 
 import org.jogamp.vecmath.Matrix4d;
 import org.jogamp.vecmath.Point2d;
@@ -177,6 +181,11 @@ class CanvasViewCache extends Object {
     // ViewPlatform scale that takes coordinates from view platform
     // coordinates and scales them to physical coordinates
     private double viewPlatformScale;
+    
+    
+    // HiDPI scale 
+    private double hiDPIXScale = 1.0;
+    private double hiDPIYScale = 1.0;
 
     // Various derived transforms
 
@@ -568,9 +577,27 @@ class CanvasViewCache extends Object {
 
 	screenWidth = screenViewCache.screenWidth;
 	screenHeight = screenViewCache.screenHeight;
+	
+	// Find the current scale value for the screen, note this actually a 
+	// property of the Screen3D but getting the value here makes refreshing 
+	// on screen changes (for example when Canvs3D is moved to another screen
+	// at a different scale) easier.
+	// Note moving a JFrame from one screen scaling to another (in a multi-screen setup)
+	// in some setups will actually resize the by an incorrect amount, possibly it is a double factor.
+	// Hence a JFrame on a 100% screen moved to a 150% screen will resize to 
+	// 150%x150% = 225%, and conversely a a 150% scale to a 100% scale will result in a 
+	// 0.666x0.666 = 0.444 scaling. This is not a Java3D issue.
+	try {
+		final Graphics2D g2d = (Graphics2D) canvas.getGraphics();
+	    final AffineTransform t = g2d.getTransform();	
+	    hiDPIXScale = t.getScaleX();
+	    hiDPIYScale = t.getScaleY();
+	} catch (IllegalComponentStateException e) {}	
 
 	metersPerPixelX = screenViewCache.metersPerPixelX;
 	metersPerPixelY = screenViewCache.metersPerPixelY;
+	
+	
 
 	// If a multi-screen virtual device (e.g. Xinerama) is being used,
 	// then awtCanvasX and awtCanvasY are relative to the origin of that
@@ -581,8 +608,8 @@ class CanvasViewCache extends Object {
 	canvasY = awtCanvasY - screenBounds.y;
 
 	// Use awtCanvasWidth and awtCanvasHeight as reported.
-	canvasWidth = awtCanvasWidth;
-	canvasHeight = awtCanvasHeight;
+	canvasWidth = (int)(awtCanvasWidth * hiDPIXScale);
+	canvasHeight = (int)(awtCanvasHeight * hiDPIYScale);
 
 	// Convert the window system ``pixel'' coordinate location and size
 	// of the window into physical units (meters) and coordinate system.
@@ -1906,14 +1933,14 @@ class CanvasViewCache extends Object {
     // Transform the specified X point in AWT window-relative coordinates
     // to image plate coordinates
     double getWindowXInImagePlate(double x) {
-	double xScreen = x + (double)canvasX;
+	double xScreen = (x * hiDPIXScale) + (double)canvasX;
 	return metersPerPixelX * xScreen;
     }
 
     // Transform the specified Y point in AWT window-relative coordinates
     // to image plate coordinates
     double getWindowYInImagePlate(double y) {
-	double yScreen = y + (double)canvasY;
+	double yScreen = (y * hiDPIYScale) + (double)canvasY;
 	return metersPerPixelY * ((double)(screenHeight - 1) - yScreen);
     }
 
@@ -1929,8 +1956,8 @@ class CanvasViewCache extends Object {
     void getPixelLocationInImagePlate(double x, double y, double z,
 				      Point3d imagePlatePoint) {
 
-	double screenx = (x + canvasX)*metersPerPixelX;
-	double screeny = (screenHeight - 1 - canvasY - y)*metersPerPixelY;
+	double screenx = ((x * hiDPIYScale) + canvasX)*metersPerPixelX;
+	double screeny = (screenHeight - 1 - canvasY - (y * hiDPIYScale))*metersPerPixelY;
 
 	if ((viewCache.projectionPolicy == View.PERSPECTIVE_PROJECTION) &&
 	    (centerEyeInImagePlate.z != 0)) {

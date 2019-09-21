@@ -26,7 +26,6 @@
 
 package org.jogamp.java3d;
 
-import java.awt.Dimension;
 import java.awt.IllegalComponentStateException;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -66,8 +65,7 @@ class CanvasViewEventCatcher extends ComponentAdapter {
 
 	    // see comment below
 	    try {
-		Dimension size = canvas.getSize();
-		canvas.newSize = new Dimension((int)(size.getWidth()*canvas.xscale), (int)(size.getHeight()*canvas.yscale));
+		canvas.newSize = canvas.getSize();
 		canvas.newPosition = canvas.getLocationOnScreen();
 	    } catch (IllegalComponentStateException ex) {}
 
@@ -92,8 +90,7 @@ class CanvasViewEventCatcher extends ComponentAdapter {
 	// first, then canvas lock in removeComponentListener()
 
 	try {
-		Dimension size = canvas.getSize();
-		canvas.newSize = new Dimension((int)(size.getWidth()*canvas.xscale), (int)(size.getHeight()*canvas.yscale));
+	    canvas.newSize = canvas.getSize();
 		canvas.newPosition = canvas.getLocationOnScreen();
 	} catch (IllegalComponentStateException ex) {}
 
