@@ -105,20 +105,28 @@ class JoglPipeline extends Pipeline {
 
     private GLProfile profile;
 
-    private Object mainThreadContext;    // Fix for Bug 983
+    private Object mainThreadContext;    // Fix for Bug 983 (on java 7 or 8 only)
 
     /**
      * Constructor for singleton JoglPipeline instance
      */
     protected JoglPipeline() {
-        // Fix for Bug 983
-        try {
-            // Retrieve main thread AppContext instance by reflection
-            mainThreadContext = Class.forName("sun.awt.AppContext").getMethod("getAppContext").invoke(null);
-        } catch (final Throwable ex) {
-            // Let's consider app context is not necessary for the program
-        }
+    	// https://bugs.openjdk.java.net/browse/JDK-8019274 fixed in Java 8 and the work around for mainThreadContext 
+    	// causes WARNING: An illegal reflective access operation has occurred in Java 10
+    	// so this work around enabled on for java 7 or 8
+    	int javaVersion = getVersion();
+		if(javaVersion == 7 || javaVersion ==8)
+		{
+	        // Fix for Bug 983
+	        try {
+	            // Retrieve main thread AppContext instance by reflection
+	            mainThreadContext = Class.forName("sun.awt.AppContext").getMethod("getAppContext").invoke(null);
+	        } catch (final Throwable ex) {
+	            // Let's consider app context is not necessary for the program
+	        }
+		}
     }
+      
 
     /**
      * Initialize the pipeline
@@ -9019,5 +9027,15 @@ static boolean hasFBObjectSizeChanged(JoglDrawable jdraw, int width, int height)
         }
 
         return bufs;
+    }
+    
+    private static int getVersion() {
+        String version = System.getProperty("java.version");
+        if(version.startsWith("1.")) {
+            version = version.substring(2, 3);
+        } else {
+            int dot = version.indexOf(".");
+            if(dot != -1) { version = version.substring(0, dot); }
+        } return Integer.parseInt(version);
     }
 }
