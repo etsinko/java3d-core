@@ -133,12 +133,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jogamp.gluegen</groupId>
-			<artifactId>gluegen-rt-main</artifactId>
+			<artifactId>gluegen-rt</artifactId>
 			<version>${jogamp.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jogamp.jogl</groupId>
-			<artifactId>jogl-all-main</artifactId>
+			<artifactId>jogl-all</artifactId>
 			<version>${jogamp.version}</version>
 		</dependency>
 	</dependencies>
