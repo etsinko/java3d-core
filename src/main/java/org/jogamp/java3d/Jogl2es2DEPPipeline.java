@@ -32,7 +32,6 @@ abstract class Jogl2es2DEPPipeline extends Pipeline
 			+ "Coordinates must be defined and float type, colors must be float type, if defined. \n"//
 			+ "Decaling is not supported. \n"//
 			+ "Model Clip is not supported and must be reimplemented in shaders \n"//
-			+ "QuadArray or IndexedQuadArray cannot be supported. \n"//
 			+ "Texture Coordinate generation ignored, must be done in shaders. \n" //
 			+ "Texture Lod, Filter, Sharpen and Combine cannot be supported. \n"//
 			+ "Texture3D cannot be supported. \n"//

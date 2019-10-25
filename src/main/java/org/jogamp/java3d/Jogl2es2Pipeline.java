@@ -121,6 +121,9 @@ class Jogl2es2Pipeline extends Jogl2es2DEPPipeline
 	// setPosition on a GLWindow can lock-up if true
 	// also with on and offscreen must be false too
 	private static final boolean NEVER_RELEASE_CONTEXT = false;
+	
+	
+	private static boolean quadArrayCautionPrinted = false;
 
 	/**
 	 * Constructor for singleton JoglPipeline instance
@@ -761,7 +764,14 @@ class Jogl2es2Pipeline extends Jogl2es2DEPPipeline
 				switch (geo_type)
 				{
 				case GeometryRetained.GEO_TYPE_QUAD_SET:
-					System.err.println("QuadArray.\n" + VALID_FORMAT_MESSAGE);
+					if(!quadArrayCautionPrinted) {
+			    		System.err.println("QuadArray will render incorrectly, consider using TriangleArray. If you have the java3d-utils in the buildpath you can convert like this:");
+			    		System.err.println("GeometryInfo gi = new GeometryInfo(quadArray);");
+			    		System.err.println("gi.convertToIndexedTriangles();	");
+			    		System.err.println("GeometryArray ga = gi.getIndexedGeometryArray(true, true, true, true, true);");
+			    		quadArrayCautionPrinted = true;
+			    	}
+					//fallthrough
 				case GeometryRetained.GEO_TYPE_TRI_SET:
 					gl.glDrawArrays(GL2ES2.GL_TRIANGLES, 0, vcount);
 					break;
@@ -1468,7 +1478,14 @@ class Jogl2es2Pipeline extends Jogl2es2DEPPipeline
 				switch (geo_type)
 				{
 				case GeometryRetained.GEO_TYPE_QUAD_SET:
-					System.err.println("QuadArray.\n" + VALID_FORMAT_MESSAGE);
+					if(!quadArrayCautionPrinted) {
+			    		System.err.println("QuadArray will render incorrectly, consider using TriangleArray. If you have the java3d-utils in the buildpath you can convert like this:");
+			    		System.err.println("GeometryInfo gi = new GeometryInfo(quadArray);");
+			    		System.err.println("gi.convertToIndexedTriangles();	");
+			    		System.err.println("GeometryArray ga = gi.getIndexedGeometryArray(true, true, true, true, true);");
+			    		quadArrayCautionPrinted = true;
+			    	}
+					//fallthrough
 				case GeometryRetained.GEO_TYPE_TRI_SET:
 					gl.glDrawArrays(GL2ES2.GL_TRIANGLES, 0, vertexCount);
 					break;
@@ -2110,7 +2127,14 @@ class Jogl2es2Pipeline extends Jogl2es2DEPPipeline
 				switch (geo_type)
 				{
 				case GeometryRetained.GEO_TYPE_INDEXED_QUAD_SET:
-					throw new UnsupportedOperationException("QuadArray.\n" + VALID_FORMAT_MESSAGE);
+					if(!quadArrayCautionPrinted) {
+			    		System.err.println("QuadArray will render incorrectly, consider using TriangleArray. If you have the java3d-utils in the buildpath you can convert like this:");
+			    		System.err.println("GeometryInfo gi = new GeometryInfo(quadArray);");
+			    		System.err.println("gi.convertToIndexedTriangles();	");
+			    		System.err.println("GeometryArray ga = gi.getIndexedGeometryArray(true, true, true, true, true);");
+			    		quadArrayCautionPrinted = true;
+			    	}
+					//fallthrough
 				case GeometryRetained.GEO_TYPE_INDEXED_TRI_SET:
 					gl.glDrawElements(GL2ES2.GL_TRIANGLES, indexCount, GL2ES2.GL_UNSIGNED_SHORT, 0);
 					break;
@@ -2886,7 +2910,14 @@ class Jogl2es2Pipeline extends Jogl2es2DEPPipeline
 				switch (geo_type)
 				{
 				case GeometryRetained.GEO_TYPE_INDEXED_QUAD_SET:
-					throw new UnsupportedOperationException("QuadArray.\n" + VALID_FORMAT_MESSAGE);
+					if(!quadArrayCautionPrinted) {
+			    		System.err.println("QuadArray will render incorrectly, consider using TriangleArray. If you have the java3d-utils in the buildpath you can convert like this:");
+			    		System.err.println("GeometryInfo gi = new GeometryInfo(quadArray);");
+			    		System.err.println("gi.convertToIndexedTriangles();	");
+			    		System.err.println("GeometryArray ga = gi.getIndexedGeometryArray(true, true, true, true, true);");
+			    		quadArrayCautionPrinted = true;
+			    	}
+					//fallthrough
 				case GeometryRetained.GEO_TYPE_INDEXED_TRI_SET:
 					gl.glDrawElements(GL2ES2.GL_TRIANGLES, validIndexCount, GL2ES2.GL_UNSIGNED_SHORT, 0);
 					break;
