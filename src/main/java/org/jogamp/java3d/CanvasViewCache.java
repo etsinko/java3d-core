@@ -2012,9 +2012,9 @@ class CanvasViewCache extends Object {
         // Note: screenPt is in image plate coords, at z=0
 
         // Transform from image plate coords to screen coords
-        pixelLocation.x = (screenX / screenViewCache.metersPerPixelX) - canvasX;
-        pixelLocation.y = screenViewCache.screenHeight - 1 -
-	    (screenY / screenViewCache.metersPerPixelY) - canvasY;
+        pixelLocation.x = ((screenX / screenViewCache.metersPerPixelX) - canvasX) / hiDPIXScale;
+        pixelLocation.y = (screenViewCache.screenHeight - 1 -
+                (screenY / screenViewCache.metersPerPixelY) - canvasY) / hiDPIYScale;
         //System.err.println("pixelLocation = " + pixelLocation);
     }
 
