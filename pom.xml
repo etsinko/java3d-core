@@ -104,7 +104,7 @@
 		<build.spec.title>${project.name}</build.spec.title>
 		<build.spec.vendor></build.spec.vendor>
 		<build.impl.title>${project.name}</build.impl.title>
-		<build.impl.vendor></build.impl.vendor>
+		<build.impl.vendor>Streamsim</build.impl.vendor>
 		<build.impl.vendor.id></build.impl.vendor.id>
 		<build.type>daily</build.type>
 		<buildtime>daily</buildtime>
