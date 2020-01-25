@@ -8373,7 +8373,8 @@ static boolean hasFBObjectSizeChanged(JoglDrawable jdraw, int width, int height)
         if (gct.getSceneAntialiasing() != GraphicsConfigTemplate.UNNECESSARY &&
             gct.getDoubleBuffer() != GraphicsConfigTemplate.UNNECESSARY) {
             caps.setSampleBuffers(true);
-            caps.setNumSamples(2);
+            int numSamples = MasterControl.getIntegerProperty("j3d.numSamples", 2);
+            caps.setNumSamples(numSamples);
         } else {
             caps.setSampleBuffers(false);
             caps.setNumSamples(0);

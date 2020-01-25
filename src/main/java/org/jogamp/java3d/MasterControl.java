@@ -806,20 +806,15 @@ private static String getProperty(final String prop) {
 		});
 }
 
-	static int getIntegerProperty(String prop, int defaultValue)
-	{
+	static int getIntegerProperty(String prop, int defaultValue) {
 		int value = defaultValue;
 		String propValue = getProperty(prop);
 
-		if (propValue != null)
-		{
-			try
-			{
+		if (propValue != null) {
+			try {
 				value = Integer.parseInt(propValue);
 			}
-			catch (NumberFormatException e)
-			{
-			}
+			catch (NumberFormatException e) { }
 		}
 		if (J3dDebug.debug)
 			System.err.println("Java 3D: " + prop + "=" + value);
