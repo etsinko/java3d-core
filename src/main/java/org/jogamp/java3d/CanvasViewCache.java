@@ -589,11 +589,9 @@ class CanvasViewCache extends Object {
 	// 0.666x0.666 = 0.444 scaling. This is not a Java3D issue.
 	try {
 		final Graphics2D g2d = (Graphics2D) canvas.getGraphics();
-		if (g2d != null) {
-			final AffineTransform t = g2d.getTransform();
-			hiDPIXScale = t.getScaleX();
-			hiDPIYScale = t.getScaleY();
-		}
+	    final AffineTransform t = g2d.getTransform();	
+	    hiDPIXScale = t.getScaleX();
+	    hiDPIYScale = t.getScaleY();
 	} catch (IllegalComponentStateException e) {}	
 
 	metersPerPixelX = screenViewCache.metersPerPixelX;
