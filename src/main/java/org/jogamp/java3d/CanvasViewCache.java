@@ -1803,6 +1803,14 @@ class CanvasViewCache extends Object {
 	return canvasHeight;
     }
 
+    double getHiDPIXScale() {
+    	return hiDPIXScale;
+	}
+
+	double getHiDPIYScale() {
+    	return hiDPIYScale;
+	}
+
     double getPhysicalWindowWidth() {
 	return physicalWindowWidth;
     }
