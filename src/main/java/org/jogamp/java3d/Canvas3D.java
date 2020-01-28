@@ -38,6 +38,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.IllegalComponentStateException;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -1577,6 +1578,13 @@ ArrayList<TextureRetained> textureIDResourceTable = new ArrayList<TextureRetaine
 	    if (graphics2D == null)
 		graphics2D = new J3DGraphics2DImpl(this);
 	}
+    // Set graphics transform to the current HiDPI scale
+    if (canvasViewCache != null) {
+        synchronized (canvasViewCache) {
+            graphics2D.setTransform(new AffineTransform(canvasViewCache.getHiDPIXScale(), 0, 0,
+                    canvasViewCache.getHiDPIYScale(), 0, 0));
+        }
+    }
 
 	return graphics2D;
     }
@@ -2835,6 +2843,30 @@ ArrayList<TextureRetained> textureIDResourceTable = new ArrayList<TextureRetaine
 	else {
 	    t.setIdentity();
 	}
+    }
+
+    /**
+     * Retreives the width of the canvas in device pixels (regardless of HIDPI scale)
+     */
+    int getPixelWidth() {
+        if (canvasViewCache != null) {
+            synchronized (canvasViewCache) {
+                return canvasViewCache.getCanvasWidth();
+            }
+        }
+        return getWidth();
+    }
+
+    /**
+     * Retreives the height of the canvas in device pixels (regardless of HIDPI scale)
+     */
+    int getPixelHeight() {
+        if (canvasViewCache != null) {
+            synchronized (canvasViewCache) {
+                return canvasViewCache.getCanvasHeight();
+            }
+        }
+        return getHeight();
     }
 
     /**

@@ -115,8 +115,10 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 	if (!initCtx) {
 	    abgr = ((canvas3d.extensionsSupported & Canvas3D.EXT_ABGR) != 0);
 
-	    width = canvas3d.getWidth();
-	    height = canvas3d.getHeight();
+	    // We use actual pixel sizes that depend
+		// on the current HiDPI setting
+		width = canvas3d.getPixelWidth();
+		height = canvas3d.getPixelHeight();
 	    initTexMap = false;
 
 	    if (width <= 0) {
@@ -135,6 +137,8 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 	    g3dImage = new BufferedImage(width, height,
 					 (abgr ? BufferedImage.TYPE_4BYTE_ABGR:
 					  BufferedImage.TYPE_INT_ARGB));
+		// No need to set graphics affine transform to HiDPI scaling
+		// as it will be reset in Canvas3D.getGraphics2D()
 	    offScreenGraphics2D = g3dImage.createGraphics();
 	    clearOffScreen();
 	    if (!abgr) {
