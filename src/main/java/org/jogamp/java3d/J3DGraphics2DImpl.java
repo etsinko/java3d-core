@@ -1179,11 +1179,17 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
     void clearOffScreen() {
 	Composite comp = offScreenGraphics2D.getComposite();
 	Color c = offScreenGraphics2D.getColor();
+	AffineTransform transform = offScreenGraphics2D.getTransform();
+	// Reset offScreenGraphics2D transform to identity because xmin, ymin, xmax and ymax
+	// are in image space and offScreenGraphics2D might have a
+	// different transform set (i.e. HiDPI transform)
+	offScreenGraphics2D.setTransform(new AffineTransform());
 	offScreenGraphics2D.setComposite(AlphaComposite.Src);
 	offScreenGraphics2D.setColor(blackTransparent);
 	offScreenGraphics2D.fillRect(xmin, ymin, (xmax-xmin), (ymax-ymin));
 	offScreenGraphics2D.setComposite(comp);
 	offScreenGraphics2D.setColor(c);
+	offScreenGraphics2D.setTransform(transform);
     }
 
     /**
