@@ -78,7 +78,6 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
     private boolean abgr;
     private boolean initTexMap = false;
     private boolean strokeSet=false;
-    private Point2D.Float ptSrc = new Point2D.Float();
     private Point2D.Float ptDst1 = new Point2D.Float();
     private Point2D.Float ptDst2 = new Point2D.Float();
     private Color xOrModeColor = null;
@@ -366,7 +365,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
     }
 
     final void validate() {
-	validate(0, 0, width, height);
+	validate(0, 0, width, height, false);
     }
 
     void validate(float x1, float y1, float x2, float y2,
@@ -374,14 +373,14 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 	float t;
 
 	if (xform == null) {
-	    validate(x1, y1, x2, y2);
+	    validate(x1, y1, x2, y2, true);
 	} else {
-	    ptSrc.x = x1;
-	    ptSrc.y = y1;
-	    xform.transform(ptSrc, ptDst1);
-	    ptSrc.x = x2;
-	    ptSrc.y = y2;
-	    xform.transform(ptSrc, ptDst2);
+		ptDst1.x = x1;
+		ptDst1.y = y1;
+	    xform.transform(ptDst1, ptDst1);
+		ptDst2.x = x2;
+		ptDst2.y = y2;
+	    xform.transform(ptDst2, ptDst2);
 
 	    if (ptDst1.x > ptDst2.x) {
 		t = ptDst1.x;
@@ -394,11 +393,24 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 		ptDst2.y = t;
 	    }
 	    // take care of numerical error by adding 1
-	    validate(ptDst1.x-1, ptDst1.y-1, ptDst2.x+1, ptDst2.y+1);
+	    validate(ptDst1.x-1, ptDst1.y-1, ptDst2.x+1, ptDst2.y+1, true);
 	}
     }
 
-    void validate(float x1, float y1, float x2, float y2) {
+	/**
+	 * Validates area of the graphics and marks it to be
+	 * put onto the canvas.
+	 *
+	 * The area is specified by a rectangle [x1,y1 -> x2,y2] provided in
+	 * either image coordinates or current tranform coordinates
+	 *
+	 * @param x1 x coordinate of the first rectangle corner
+	 * @param y1 y coordinate of the first rectangle corner
+	 * @param x2 x coordinate of the second rectangle corner
+	 * @param y2 y coordinate of the second rectangle corner
+	 * @param shouldTransform if true, the coordinates will be transformed by the current AffineTransform into image coordinates
+	 */
+    void validate(float x1, float y1, float x2, float y2, boolean shouldTransform) {
 	boolean doResize = false;
 	isFlushed = false;
 
@@ -416,24 +428,42 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 		copyGraphics2D(oldOffScreenGraphics2D);
 	    }
 	} else {
-	    AffineTransform tr = getTransform();
-	    ptSrc.x = x1;
-	    ptSrc.y = y1;
-	    tr.transform(ptSrc, ptDst1);
-	    ptSrc.x = x2;
-	    ptSrc.y = y2;
-	    tr.transform(ptSrc, ptDst2);
+		ptDst1.x = x1;
+		ptDst1.y = y1;
+		ptDst2.x = x2;
+		ptDst2.y = y2;
+		if (shouldTransform) {
+			AffineTransform tr = getTransform();
+			tr.transform(ptDst1, ptDst1);
+			tr.transform(ptDst2, ptDst2);
+		}
 
 	    synchronized (extentLock) {
+		// xmin = min(xmin, ptDst1.x, ptDst2.x)
 	    if (ptDst1.x < xmin) {
 		xmin = (int) ptDst1.x;
 	    }
+	    if (ptDst2.x < xmin) {
+		xmin = (int) ptDst2.x;
+		}
+		// ymin = min(ymin, ptDst1.y, ptDst2.y)
 	    if (ptDst1.y < ymin) {
 		ymin = (int) ptDst1.y;
 	    }
+		if (ptDst2.y < ymin) {
+		ymin = (int) ptDst2.y;
+		}
+		// xmax = max(xmax, ptDst1.x, ptDst2.x)
+		if (ptDst1.x > xmax) {
+		xmax = (int) ptDst1.x;
+		}
 	    if (ptDst2.x > xmax) {
 		xmax = (int) ptDst2.x;
 	    }
+		// ymax = max(ymax, ptDst1.y, ptDst2.y)
+		if (ptDst1.y > ymax) {
+		ymax = (int) ptDst1.y;
+		}
 	    if (ptDst2.y > ymax) {
 		ymax = (int) ptDst2.y;
 	    }
@@ -562,7 +592,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 	if (op != null) {
 	    img = op.filter(img, null);
 	}
-	validate(x, y, x+img.getWidth(), y+img.getHeight());
+	validate(x, y, x+img.getWidth(), y+img.getHeight(), true);
 	offScreenGraphics2D.drawImage(img, null, x, y);
     }
 
@@ -573,7 +603,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 
 	validate(x, y,
 		 x + img.getWidth(observer),
-		 y + img.getWidth(observer));
+		 y + img.getWidth(observer), true);
 	return offScreenGraphics2D.drawImage(img, x, y, observer);
     }
 
@@ -581,7 +611,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
     public final boolean drawImage(Image img, int x, int y,
 				   int width, int height,
 				   ImageObserver observer) {
-	validate(x, y, x+width, y+height);
+	validate(x, y, x+width, y+height, true);
 	return offScreenGraphics2D.drawImage(img, x, y, width, height,
 					     observer);
     }
@@ -591,7 +621,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 				   int width, int height,
 				   Color bgcolor,
 				   ImageObserver observer) {
-	validate(x, y, x+width, y+height);
+	validate(x, y, x+width, y+height, true);
 	return offScreenGraphics2D.drawImage(img, x, y, width, height, bgcolor,
 					     observer);
     }
@@ -600,7 +630,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 				int dx1, int dy1, int dx2, int dy2,
 				int sx1, int sy1, int sx2, int sy2,
 				ImageObserver observer) {
-	validate(dx1, dy1, dx2, dy2);
+	validate(dx1, dy1, dx2, dy2, true);
 	offScreenGraphics2D.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1,
 				      sx2, sy2, observer);
     }
@@ -610,7 +640,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 				   int dx1, int dy1, int dx2, int dy2,
 				   int sx1, int sy1, int sx2, int sy2,
 				   ImageObserver observer) {
-	validate(dx1, dy1, dx2, dy2);
+	validate(dx1, dy1, dx2, dy2, true);
 	return offScreenGraphics2D.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1,
 					     sx2, sy2, observer);
     }
@@ -621,7 +651,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 				   int sx1, int sy1, int sx2, int sy2,
 				   Color bgcolor,
 				   ImageObserver observer) {
-	validate(dx1, dy1, dx2, dy2);
+	validate(dx1, dy1, dx2, dy2, true);
 	return offScreenGraphics2D.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1,
 					     sx2, sy2, bgcolor, observer);
     }
@@ -630,7 +660,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
     public final boolean drawImage(Image img, int x, int y,
 				   Color bgcolor,
 				   ImageObserver observer) {
-	validate(x, y, x+img.getWidth(observer), y+img.getHeight(observer));
+	validate(x, y, x+img.getWidth(observer), y+img.getHeight(observer), true);
 	return offScreenGraphics2D.drawImage(img, x, y, bgcolor, observer);
     }
 
@@ -652,7 +682,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
     @Override
     public final void copyArea(int x, int y, int width, int height,
 			       int dx, int dy) {
-	validate(x+dx, y+dy, x+dx+width, y+dy+height);
+	validate(x+dx, y+dy, x+dx+width, y+dy+height, true);
 	offScreenGraphics2D.copyArea(x, y, width, height, dx, dy);
     }
 
@@ -661,7 +691,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 	Rectangle rect = s.getBounds();
 	validate(rect.x, rect.y,
 		 rect.x + rect.width,
-		 rect.y + rect.height);
+		 rect.y + rect.height, true);
 	offScreenGraphics2D.draw(s);
     }
 
@@ -698,7 +728,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 		miny = y1;
 		maxy = y2;
 	    }
-	    validate(minx, miny, maxx, maxy);
+	    validate(minx, miny, maxx, maxy, true);
 	} else {
 	    // XXXX: call validate with bounding box of primitive
 	    // XXXX: Need to consider Stroke width
@@ -779,7 +809,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
        float y1 = (float) bounds.getY();
        validate(x1+x, y1+y,
 		x1 + x + (float) bounds.getWidth(),
-		y1 + y + (float) bounds.getHeight());
+		y1 + y + (float) bounds.getHeight(), true);
        offScreenGraphics2D.drawString(s, x, y);
 
     }
@@ -792,7 +822,7 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
     @Override
     public final void fill(Shape s) {
 	Rectangle rect = s.getBounds();
-	validate(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
+	validate(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, true);
 	offScreenGraphics2D.fill(s);
     }
 
@@ -1085,9 +1115,9 @@ final class J3DGraphics2DImpl extends J3DGraphics2D {
 	// Transform the affine transform,
 	// note we do not handle scale/rotate etc.
 	AffineTransform tr = getTransform();
-	ptSrc.x = x;
-	ptSrc.y = y;
-	tr.transform(ptSrc, ptDst1);
+	ptDst1.x = x;
+	ptDst1.y = y;
+	tr.transform(ptDst1, ptDst1);
 	px = (int) ptDst1.x;
 	py = (int) ptDst1.y;
 
