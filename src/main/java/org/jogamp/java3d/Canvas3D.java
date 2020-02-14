@@ -2848,7 +2848,7 @@ ArrayList<TextureRetained> textureIDResourceTable = new ArrayList<TextureRetaine
     /**
      * Retreives the width of the canvas in device pixels (regardless of HIDPI scale)
      */
-    int getPixelWidth() {
+    public int getPixelWidth() {
         if (canvasViewCache != null) {
             synchronized (canvasViewCache) {
                 return canvasViewCache.getCanvasWidth();
@@ -2860,7 +2860,7 @@ ArrayList<TextureRetained> textureIDResourceTable = new ArrayList<TextureRetaine
     /**
      * Retreives the height of the canvas in device pixels (regardless of HIDPI scale)
      */
-    int getPixelHeight() {
+    public int getPixelHeight() {
         if (canvasViewCache != null) {
             synchronized (canvasViewCache) {
                 return canvasViewCache.getCanvasHeight();
