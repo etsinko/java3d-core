@@ -2255,7 +2255,6 @@ public int numSounds() {
         }
 
         RasterRetained ras = (RasterRetained)raster.retained;
-        Dimension canvasSize = canvas3d.getSize();
         Dimension rasterSize = new Dimension();
         ImageComponent2DRetained image = ras.image;
 
@@ -2348,7 +2347,7 @@ public int numSounds() {
 
                 Pipeline.getPipeline().readRaster(canvas3d.ctx,
                         ras.type, rasterSrcOffset.x, rasterSrcOffset.y,
-                        rasterSize.width, rasterSize.height, canvasSize.height,
+                        rasterSize.width, rasterSize.height, canvas3d.getPixelHeight(),
                         imageDataType,
                         imageFormatType,
                         imageBuffer,
