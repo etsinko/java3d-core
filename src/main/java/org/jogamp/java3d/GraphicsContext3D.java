@@ -30,6 +30,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 
 import org.jogamp.vecmath.Color3f;
 import org.jogamp.vecmath.Vector3d;
@@ -313,9 +314,6 @@ public class GraphicsContext3D extends Object   {
     // multi-texture
     private int numActiveTexUnit = 0;
     private int lastActiveTexUnitIndex = 0;
-
-    // for read raster
-    private volatile boolean readRasterReady = false;
 
     // for runMonitor
     private boolean gcReady = false;
@@ -2230,27 +2228,21 @@ public int numSounds() {
 		(!canvas3d.view.active)) {
             return;
         } else if (Thread.currentThread() == canvas3d.screen.renderer) {
-            doReadRaster(raster);
-        } else if (Thread.currentThread() ==
-                        canvas3d.view.universe.behaviorScheduler) {
-	    readRasterReady = false;
-            sendRenderMessage(false, GraphicsContext3D.READ_RASTER, raster, null);
-	    while (!readRasterReady) {
-		MasterControl.threadYield();
-	    }
+            doReadRaster(raster, null);
         } else {
-	    // call from user thread
-	    readRasterReady = false;
-            sendRenderMessage(true, GraphicsContext3D.READ_RASTER, raster, null);
-	    while (!readRasterReady) {
-		MasterControl.threadYield();
-	    }
+            CountDownLatch latch = new CountDownLatch(1);
+            sendRenderMessage(Thread.currentThread() != canvas3d.view.universe.behaviorScheduler,
+                    GraphicsContext3D.READ_RASTER, raster, latch);
+            try {
+                latch.await();
+            } catch (InterruptedException ignored) {
+            }
         }
     }
 
-    void doReadRaster(Raster raster) {
+    void doReadRaster(Raster raster, CountDownLatch latch) {
+        try {
         if (!canvas3d.firstPaintCalled) {
-            readRasterReady = true;
             return;
         }
 
@@ -2374,7 +2366,11 @@ public int numSounds() {
                 ((DepthComponentNativeRetained)ras.depthComponent).retrieveDepth(
                         intBuffer, rasterSize.width, rasterSize.height);
         }
-        readRasterReady = true;
+        } finally {
+            if (latch != null) {
+                latch.countDown();
+            }
+        }
     }
 
     /**
