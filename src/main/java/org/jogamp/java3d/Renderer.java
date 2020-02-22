@@ -39,6 +39,7 @@ import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 
@@ -691,7 +692,7 @@ ArrayList<TextureRetained> textureIDResourceTable = new ArrayList<TextureRetaine
                         break;
                     case GraphicsContext3D.READ_RASTER:
                         canvas.graphicsContext3D.doReadRaster(
-				(Raster)m[nmesg].args[2]);
+				(Raster)m[nmesg].args[2], (CountDownLatch) m[nmesg].args[3]);
                         break;
 		    case GraphicsContext3D.SET_APPEARANCE:
 			canvas.graphicsContext3D.doSetAppearance(
