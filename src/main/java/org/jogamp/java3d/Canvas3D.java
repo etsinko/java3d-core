@@ -2851,7 +2851,7 @@ ArrayList<TextureRetained> textureIDResourceTable = new ArrayList<TextureRetaine
     public int getPixelWidth() {
         if (canvasViewCache != null) {
             synchronized (canvasViewCache) {
-                return canvasViewCache.getCanvasWidth();
+                return (int) (getWidth() * canvasViewCache.getHiDPIXScale());
             }
         }
         return getWidth();
@@ -2863,7 +2863,7 @@ ArrayList<TextureRetained> textureIDResourceTable = new ArrayList<TextureRetaine
     public int getPixelHeight() {
         if (canvasViewCache != null) {
             synchronized (canvasViewCache) {
-                return canvasViewCache.getCanvasHeight();
+                return (int) (getHeight() * canvasViewCache.getHiDPIYScale());
             }
         }
         return getHeight();
